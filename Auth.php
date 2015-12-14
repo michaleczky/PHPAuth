@@ -126,6 +126,32 @@ class Auth
 
 		return $return;
 	}
+        
+        /***
+         * Logs a user in by its email (in case when other provider authenticates the user)
+         * @param string $email
+         * @param int $remember
+         * @return array $return
+         */
+        public function loginByEmail($email, $remember = 0) {
+            $return['error'] = true;            
+            $uid = $this->getUID(strtolower($email));
+            if(!$uid) {
+                $this->addAttempt();
+                $return['message'] = $this->lang["email_password_incorrect"];
+                return $return;
+            }
+            $sessiondata = $this->addSession($uid, $remember);
+            if($sessiondata == false) {
+                    $return['message'] = $this->lang["system_error"] . " #01";
+                    return $return;
+            }
+            $return['error'] = false;
+            $return['message'] = $this->lang["logged_in"];
+            $return['hash'] = $sessiondata['hash'];
+            $return['expire'] = $sessiondata['expiretime'];
+            return $return;            
+        }
 
 	/***
 	* Creates a new user, adds them to database
