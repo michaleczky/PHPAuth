@@ -535,12 +535,11 @@ class Auth
 	* @return int $uid
 	*/
 
-	private function addUser($email, $password, $params = array(), &$sendmail)
+	public function addUser($email, $password, $params = array(), &$sendmail = false)
 	{
 		$return['error'] = true;
 
 		$query = $this->dbh->prepare("INSERT INTO {$this->config->table_users} VALUES ()");
-
 		if(!$query->execute()) {
 			$return['message'] = $this->lang["system_error"] . " #03";
 			return $return;
